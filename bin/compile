@@ -21,17 +21,21 @@ restore_cache() {
   fi
 }
 
-cache_build() {
-  cp -R "$BUILD_DIR/elm-stuff" "$CACHE_DIR"
-}
-
 install_binaries() {
   # node_modules should already be on the path
   cd "$BUILD_DIR" && elm-package install -y | indent
 }
 
+make_app() {
+  cd "$BUILD_DIR" && elm-make elm/src/Main.elm --output=public/main.js | indent
+}
+
+cache_build() {
+  cp -R "$BUILD_DIR/elm-stuff" "$CACHE_DIR"
+}
 
 
 restore_cache
 install_binaries
+make_app
 cache_build
