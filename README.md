@@ -1,8 +1,6 @@
 ## Heroku Elm Buildpack
 
-A simple buildpack that uses [npm's elm package](https://www.npmjs.com/package/elm) for binaries, and compiles `elm/src/Main.elm` to `public/main.js`.
-
-:warning: Currently Heroku's multi-buildpack support uses the last buildpack for deployment, which means you need to have a buildpack loaded after this one.
+A simple buildpack that uses [npm's elm package](https://www.npmjs.com/package/elm) for binaries, and compiles `src/App.elm` to `public/app.js`.
 
 ### Configuration
 
@@ -10,7 +8,7 @@ A simple buildpack that uses [npm's elm package](https://www.npmjs.com/package/e
 
   ```
   {
-    "name": "myproject",
+    "name": "myapp",
     ...
     "dependencies": {
       "elm": "^0.17.1"
@@ -18,18 +16,44 @@ A simple buildpack that uses [npm's elm package](https://www.npmjs.com/package/e
   }
   ```
 
-2. Add the buildpacks in order. For example, a Rails application with Elm:
+2. Add/modify `app.json` with the following buildpacks:
 
-  ```
-  # Add buildpacks
-  $ heroku buildpacks:add heroku/nodejs
-  $ heroku buildpacks:add https://github.com/supermario/heroku-buildpack-elm
-  $ heroku buildpacks:add heroku/ruby
+```
+{
+  "name": "myapp",
+  "scripts": {},
+  "env": {},
+  "formation": {},
+  "addons": [],
+  "buildpacks": [
+    { "url": "heroku/nodejs" },
+    { "url": "https://github.com/supermario/heroku-buildpack-elm" }
+  ]
+}
+```
 
-  # List buildpacks to check ordering
-  $ heroku buildpacks
-  === Buildpack URLs
-  1. heroku/nodejs
-  2. https://github.com/supermario/heroku-buildpack-elm
-  3. heroku/ruby
-  ```
+3. :warning: Currently Heroku's multi-buildpack support uses the last buildpack for deployment, which means you need to have a buildpack loaded after this one, or a Procfile.
+
+Here's a simple static server `Procfile`, assuming you've `npm install http-server --save`'ed to update your `package.json`.
+
+```
+web: http-server public/ -p $PORT --robots
+```
+
+Don't forget your `public/index.html`:
+
+```
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+  <script src="app.js"></script>
+</head>
+<body>
+  <script type="text/javascript">
+    Elm.App.fullscreen()
+  </script>
+</body>
+</html>
+```

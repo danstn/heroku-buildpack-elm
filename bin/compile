@@ -27,7 +27,7 @@ install_binaries() {
 }
 
 make_app() {
-  cd "$BUILD_DIR" && elm-make elm/src/Main.elm --output=public/main.js | indent
+  cd "$BUILD_DIR" && elm-make src/App.elm --output=public/app.js | indent
 }
 
 cache_build() {
