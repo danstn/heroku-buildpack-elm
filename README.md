@@ -57,3 +57,5 @@ Don't forget your `public/index.html`:
 </body>
 </html>
 ```
+
+Note: Make sure that nodejs buildpack is specified first, otherwise `elm-package` and `elm-make` will not be found. Run `heroku buildpacks` to verify the order (or use Heroku Dashboard).
